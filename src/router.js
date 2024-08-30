@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { mock } = require("node:test");
+require("dotenv").config();
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.post("/login", (req, res) => {
     credentials.username == mockUser.username &&
     credentials.password == mockUser.password
   ) {
-    res.json(jwt.sign({ username: mockUser.username }, "secretkey"));
+    res.json(jwt.sign({ username: mockUser.username }, JWT_SECRET));
   } else {
     res.status(401).send("Bad username or password");
   }
@@ -31,7 +32,7 @@ router.get("/profile", (req, res) => {
   const token = req.headers.authorization;
   console.log(token);
   try {
-    let tokenVerify = jwt.verify(token, "secretkey");
+    let tokenVerify = jwt.verify(token, JWT_SECRET);
     res.json({ profile: mockUser.profile });
   } catch (error) {
     res.status(401).send("No");
